@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			
+			*{
+				box-sizing: border-box;
+			}
+			main{
+				width: 400px;
+				height: 340px;
+				border: 1px solid red;
+				margin: auto;
+				display: flex;
+				flex-flow: column;
+			    justify-content: space-around;
+			    padding: 10px;
+			}
+			fieldset{
+				flex: 0 0 100px;
+			}
+			.showResult{
+				flex: auto;
+				margin-top: 20px;
+				border: 1px solid blue;
+			}
+			.select{
+				display: flex;
+				justify-content: space-around;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<fieldset id="">
+				<legend>请选择五张牌</legend>
+				<div class="select">
+					<select name="" id="">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="10">J</option>
+						<option value="10">Q</option>
+						<option value="10">K</option>
+					</select>
+					
+					<button onclick="calcNiu()">计算</button>
+				</div>
+				
+			</fieldset>
+			
+			<div class="showResult"></div>
+		</main>
+		<script type="text/javascript">
+			//获取元素
+			var showResult= document.querySelector('.showResult');
+			var selects = document.querySelectorAll('select');
+			
+			function calcNiu(){
+				//获取5张牌
+				var carArr=[];
+				for(var i=0;i<selects.length;i++){
+					var select = selects[i].value;
+					carArr.push(select);
+				}
+				console.log(carArr);
+				var isTrue = isNiu(carArr);
+				if(isTrue){
+					//有牛
+					if(countNiu(carArr)==0){
+						showResult.innerHTML='牛牛';
+					}else{
+						showResult.innerHTML='牛'+countNiu(carArr);
+					}
+				}else{
+					showResult.innerHTML='没牛';
+				}
+			}
+			
+			//判断是否有牛
+			function isNiu(arr){
+				//数组内随机的三个数加起来是否能被10整除
+				for(var i=0;i<arr.length;i++){
+					for (var j = i+1; j < arr.length; j++) {
+						for (var k = j+1; k < arr.length; k++) {
+							if((Number(arr[i])+Number(arr[j])+Number(arr[k]))%10==0){
+								return true;
+							}
+						}
+					}
+				}
+				return false;
+			}
+			
+			//判断是牛几
+			function countNiu(arr){
+				var sum=0;
+				for (var i = 0; i < arr.length; i++) {
+					//求五张牌的总和
+					sum +=Number(arr[i]);
+				}
+				//返回它的余数
+				return sum%10;
+			}
+			
+		</script>
+	</body>
+</html>
