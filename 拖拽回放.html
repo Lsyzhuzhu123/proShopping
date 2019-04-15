@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			html,body{
+				width:100%;
+				height: 100%;
+				margin: 0;
+				background-color: black;
+			}
+			body{
+				color: blue;
+				font-size: 13px;
+			}
+			#box{
+				width: 300px;
+				height: 150px;
+				border: 2px solid white;
+				position: absolute;
+				left: calc(50% - 150px);
+				top: calc(50% - 75px);
+				/*background-color: #333333;*/
+				background-color: lawngreen;
+				
+				
+			}
+			h2{
+				height: 25px;
+				border-bottom: 2px solid white;
+		      	margin-top: 0px;
+		      	text-align: right;
+		      	/*background-color: #222;*/
+		      	background-color: brown;
+		      	padding-right: 10px;	
+			}
+			a{
+				font-size: 15px;
+				color: white;
+				text-decoration: none;
+			}
+			p{
+				padding-left: 10px;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<div id="box">
+			<h2><a href="">点击回放拖拽轨迹</a></h2>
+			<p><strong>Drag:</strong><span>false</span></p>
+			<p><strong>offsetLeft:</strong><span>100</span></p>
+			<p><strong>offsetTop:</strong><span>100</span></p>
+		</div>
+		<script type="text/javascript">
+			window.onload = function(){
+				//获取需要的标签
+				var Box = document.querySelector('#box');
+				var h2 = document.getElementsByTagName('h2')[0];
+				var oA = document.getElementsByTagName('a')[0];
+				var span = document.getElementsByTagName('span');
+				
+				//定义一个值，判断是否被拖动
+				var isDrag = false;
+				
+				//定义一个数组，用来保存拖动的轨迹
+				var aPoint = [{x:Box.offsetLeft,y:Box.offsetTp}];
+				
+				//更新的span的状态
+				function updateState(){
+					span[0].innerText=isDrag;
+					span[1].innerText=Box.offsetLeft;
+					span[2].innerText=Box.offsetTop;
+				}
+				updateState();
+				h2.onmousedown = function(event){
+					isDrag=true;
+					//获取鼠标距离当前点击元素的距离
+				    var disX=event.offsetX;
+				    var disY=event.offsetY;
+				    document.onmousemove =function(e){
+				    	//鼠标距离当前屏幕的位置
+				    	// e.clientX   e.clientY
+				    	//获取Box移动的位置
+				    	var left = e.clientX-disX;
+				    	var top =e.clientY-disY;
+				    	console.log(left,top);
+				    	//判断边界问题
+				    	//左边和上边
+				    	//三目运算符
+				    	left=left<0?0:left;
+				    	top=top<0?0:top;
+				    	
+				    	//右边和下边
+				    	//获取移动最大的右边距离和上边距离
+				    	var maxLeft=document.documentElement.clientWidth-Box.offsetWidth;
+				    	var maxTop = document.documentElement.clientHeight-Box.offsetHeight;
+				    	left=left>maxLeft?maxLeft:left;
+				    	top=top>maxTop?maxTop:top;
+				    	
+				    	
+				    	Box.style.left=left+'px';
+				    	Box.style.top=top+'px';
+				    	//更新状态
+				    	updateState();
+				    	
+				    	//将移动轨迹存到数组
+				    	aPoint.push({
+				    		x:left,
+				    		y:top
+				    	});
+				    	
+				    }
+				}
+				
+				h2.onmouseup=function(){
+					//取消鼠标移动事件
+					document.onmousemove=null;
+					isDrag=false;
+					//状态更新
+					updateState();
+				}
+			oA.onclick = function(e){
+				e.preventDefault();
+				//如果只有一个坐标，说明根本及没有移动
+				if(aPoint.length > 1){
+				    var timer =	setInterval(function(){
+						var  point = aPoint.pop();
+						if(point){
+							Box.style.left = point.x + 'px';
+					        Box.style.top =  point.y+ 'px';
+					        updateState();
+						}else{
+							//没有值可取了，别再取了
+							clearInterval(timer);
+						}
+					},20)
+				}
+			}
+			
+
+		}
+		</script>
+	</body>
+</html>
